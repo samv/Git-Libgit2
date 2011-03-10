@@ -1,0 +1,14 @@
+OUTPUT
+
+O_OBJECT
+	sv_setref_pvn($arg, \"${(my $ntt = $ntype) =~ s{Ptr$}{}; $ntt =~ s{^git_}{Git::Libgit2::}; $ntt =~ s{repository}{repo}; \$ntt}\", (char *)&$var, sizeof($var));
+
+INPUT
+
+O_OBJECT
+	if( sv_isobject($arg) && (SvTYPE(SvRV($arg)) == SVt_PVMG) )
+		$var = ($type)SvIV((SV*)SvRV( $arg ));
+	else{
+		warn( \"${Package}::$func_name() -- $var is not a blessed SV reference\" );
+		XSRETURN_UNDEF;
+	}
