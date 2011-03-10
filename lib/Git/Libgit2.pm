@@ -78,6 +78,20 @@ has '__C' => (
 	}
 );
 
+has '__odb' => (
+	is => 'ro',
+	isa => "Git::Libgit2::odb",
+	lazy => 1,
+	predicate => "__has_odb",
+	default => sub {
+		my $self = shift;
+		# could do git_repository_open2 if they passed in
+		# both gitdir and directory/workdir
+		git_repository_database($self->__C);
+	}
+
+);
+
 sub DESTROY {
 	my $self = shift;
 	if ( $self->__has_C ) {

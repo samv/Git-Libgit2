@@ -1,1 +1,2 @@
 git_repository *					O_OBJECT
+git_odb *					O_OBJECT

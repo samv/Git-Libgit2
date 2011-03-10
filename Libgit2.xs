@@ -68,3 +68,7 @@ void
 git_repository_free(repo)
 	 git_repository * repo;
 
+git_odb*
+git_repository_database(repo)
+	 git_repository * repo;
+
