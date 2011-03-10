@@ -1,0 +1,912 @@
+#include "EXTERN.h"
+#include "perl.h"
+#include "XSUB.h"
+
+#include "ppport.h"
+
+#include <git2.h>
+#include <git2/blob.h>
+#include <git2/commit.h>
+#include <git2/common.h>
+#include <git2/errors.h>
+#include <git2/index.h>
+#include <git2/object.h>
+#include <git2/odb_backend.h>
+#include <git2/odb.h>
+#include <git2/oid.h>
+#include <git2/refs.h>
+#include <git2/repository.h>
+#include <git2/revwalk.h>
+#include <git2/signature.h>
+#include <git2/tag.h>
+#include <git2/thread-utils.h>
+#include <git2/tree.h>
+#include <git2/zlib.h>
+
+
+MODULE = Git::LibGit2		PACKAGE = Git::LibGit2		
+
+
+int
+git_oid_shorten_add(os, text_oid)
+	git_oid_shorten *	os
+	const char *	text_oid
+
+void
+git_oid_shorten_free(os)
+	git_oid_shorten *	os
+
+git_oid_shorten *
+git_oid_shorten_new(min_length)
+	size_t	min_length
+
+MODULE = Git::LibGit2		PACKAGE = git_index_entry		
+
+git_index_entry *
+_to_ptr(THIS)
+	git_index_entry THIS = NO_INIT
+    PROTOTYPE: $
+    CODE:
+	if (sv_derived_from(ST(0), "git_index_entry")) {
+	    STRLEN len;
+	    char *s = SvPV((SV*)SvRV(ST(0)), len);
+	    if (len != sizeof(THIS))
+		croak("Size %d of packed data != expected %d",
+			len, sizeof(THIS));
+	    RETVAL = (git_index_entry *)s;
+	}
+	else
+	    croak("THIS is not of type git_index_entry");
+    OUTPUT:
+	RETVAL
+
+git_index_entry
+new(CLASS)
+	char *CLASS = NO_INIT
+    PROTOTYPE: $
+    CODE:
+	Zero((void*)&RETVAL, sizeof(RETVAL), char);
+    OUTPUT:
+	RETVAL
+
+MODULE = Git::LibGit2		PACKAGE = git_index_entryPtr		
+
+git_index_time *
+ctime(THIS, __value = NO_INIT)
+	git_index_entry * THIS
+	git_index_time __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->ctime = __value;
+	RETVAL = &(THIS->ctime);
+    OUTPUT:
+	RETVAL
+
+git_index_time *
+mtime(THIS, __value = NO_INIT)
+	git_index_entry * THIS
+	git_index_time __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->mtime = __value;
+	RETVAL = &(THIS->mtime);
+    OUTPUT:
+	RETVAL
+
+unsigned int
+dev(THIS, __value = NO_INIT)
+	git_index_entry * THIS
+	unsigned int __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->dev = __value;
+	RETVAL = THIS->dev;
+    OUTPUT:
+	RETVAL
+
+unsigned int
+ino(THIS, __value = NO_INIT)
+	git_index_entry * THIS
+	unsigned int __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->ino = __value;
+	RETVAL = THIS->ino;
+    OUTPUT:
+	RETVAL
+
+unsigned int
+mode(THIS, __value = NO_INIT)
+	git_index_entry * THIS
+	unsigned int __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->mode = __value;
+	RETVAL = THIS->mode;
+    OUTPUT:
+	RETVAL
+
+unsigned int
+uid(THIS, __value = NO_INIT)
+	git_index_entry * THIS
+	unsigned int __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->uid = __value;
+	RETVAL = THIS->uid;
+    OUTPUT:
+	RETVAL
+
+unsigned int
+gid(THIS, __value = NO_INIT)
+	git_index_entry * THIS
+	unsigned int __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->gid = __value;
+	RETVAL = THIS->gid;
+    OUTPUT:
+	RETVAL
+
+git_off_t
+file_size(THIS, __value = NO_INIT)
+	git_index_entry * THIS
+	git_off_t __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->file_size = __value;
+	RETVAL = THIS->file_size;
+    OUTPUT:
+	RETVAL
+
+git_oid *
+oid(THIS, __value = NO_INIT)
+	git_index_entry * THIS
+	git_oid __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->oid = __value;
+	RETVAL = &(THIS->oid);
+    OUTPUT:
+	RETVAL
+
+unsigned short
+flags(THIS, __value = NO_INIT)
+	git_index_entry * THIS
+	unsigned short __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->flags = __value;
+	RETVAL = THIS->flags;
+    OUTPUT:
+	RETVAL
+
+unsigned short
+flags_extended(THIS, __value = NO_INIT)
+	git_index_entry * THIS
+	unsigned short __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->flags_extended = __value;
+	RETVAL = THIS->flags_extended;
+    OUTPUT:
+	RETVAL
+
+char *
+path(THIS, __value = NO_INIT)
+	git_index_entry * THIS
+	char * __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->path = __value;
+	RETVAL = THIS->path;
+    OUTPUT:
+	RETVAL
+
+
+MODULE = Git::LibGit2		PACKAGE = fd_set		
+
+fd_set *
+_to_ptr(THIS)
+	fd_set THIS = NO_INIT
+    PROTOTYPE: $
+    CODE:
+	if (sv_derived_from(ST(0), "fd_set")) {
+	    STRLEN len;
+	    char *s = SvPV((SV*)SvRV(ST(0)), len);
+	    if (len != sizeof(THIS))
+		croak("Size %d of packed data != expected %d",
+			len, sizeof(THIS));
+	    RETVAL = (fd_set *)s;
+	}
+	else
+	    croak("THIS is not of type fd_set");
+    OUTPUT:
+	RETVAL
+
+fd_set
+new(CLASS)
+	char *CLASS = NO_INIT
+    PROTOTYPE: $
+    CODE:
+	Zero((void*)&RETVAL, sizeof(RETVAL), char);
+    OUTPUT:
+	RETVAL
+
+MODULE = Git::LibGit2		PACKAGE = git_time		
+
+git_time *
+_to_ptr(THIS)
+	git_time THIS = NO_INIT
+    PROTOTYPE: $
+    CODE:
+	if (sv_derived_from(ST(0), "git_time")) {
+	    STRLEN len;
+	    char *s = SvPV((SV*)SvRV(ST(0)), len);
+	    if (len != sizeof(THIS))
+		croak("Size %d of packed data != expected %d",
+			len, sizeof(THIS));
+	    RETVAL = (git_time *)s;
+	}
+	else
+	    croak("THIS is not of type git_time");
+    OUTPUT:
+	RETVAL
+
+git_time
+new(CLASS)
+	char *CLASS = NO_INIT
+    PROTOTYPE: $
+    CODE:
+	Zero((void*)&RETVAL, sizeof(RETVAL), char);
+    OUTPUT:
+	RETVAL
+
+MODULE = Git::LibGit2		PACKAGE = git_timePtr		
+
+time_t
+time(THIS, __value = NO_INIT)
+	git_time * THIS
+	time_t __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->time = __value;
+	RETVAL = THIS->time;
+    OUTPUT:
+	RETVAL
+
+int
+offset(THIS, __value = NO_INIT)
+	git_time * THIS
+	int __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->offset = __value;
+	RETVAL = THIS->offset;
+    OUTPUT:
+	RETVAL
+
+
+MODULE = Git::LibGit2		PACKAGE = git_signature		
+
+git_signature *
+_to_ptr(THIS)
+	git_signature THIS = NO_INIT
+    PROTOTYPE: $
+    CODE:
+	if (sv_derived_from(ST(0), "git_signature")) {
+	    STRLEN len;
+	    char *s = SvPV((SV*)SvRV(ST(0)), len);
+	    if (len != sizeof(THIS))
+		croak("Size %d of packed data != expected %d",
+			len, sizeof(THIS));
+	    RETVAL = (git_signature *)s;
+	}
+	else
+	    croak("THIS is not of type git_signature");
+    OUTPUT:
+	RETVAL
+
+git_signature
+new(CLASS)
+	char *CLASS = NO_INIT
+    PROTOTYPE: $
+    CODE:
+	Zero((void*)&RETVAL, sizeof(RETVAL), char);
+    OUTPUT:
+	RETVAL
+
+MODULE = Git::LibGit2		PACKAGE = git_signaturePtr		
+
+char *
+name(THIS, __value = NO_INIT)
+	git_signature * THIS
+	char * __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->name = __value;
+	RETVAL = THIS->name;
+    OUTPUT:
+	RETVAL
+
+char *
+email(THIS, __value = NO_INIT)
+	git_signature * THIS
+	char * __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->email = __value;
+	RETVAL = THIS->email;
+    OUTPUT:
+	RETVAL
+
+git_time *
+when(THIS, __value = NO_INIT)
+	git_signature * THIS
+	git_time __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->when = __value;
+	RETVAL = &(THIS->when);
+    OUTPUT:
+	RETVAL
+
+
+MODULE = Git::LibGit2		PACKAGE = z_stream		
+
+z_stream *
+_to_ptr(THIS)
+	z_stream THIS = NO_INIT
+    PROTOTYPE: $
+    CODE:
+	if (sv_derived_from(ST(0), "z_stream")) {
+	    STRLEN len;
+	    char *s = SvPV((SV*)SvRV(ST(0)), len);
+	    if (len != sizeof(THIS))
+		croak("Size %d of packed data != expected %d",
+			len, sizeof(THIS));
+	    RETVAL = (z_stream *)s;
+	}
+	else
+	    croak("THIS is not of type z_stream");
+    OUTPUT:
+	RETVAL
+
+z_stream
+new(CLASS)
+	char *CLASS = NO_INIT
+    PROTOTYPE: $
+    CODE:
+	Zero((void*)&RETVAL, sizeof(RETVAL), char);
+    OUTPUT:
+	RETVAL
+
+MODULE = Git::LibGit2		PACKAGE = z_streamPtr		
+
+Bytef *
+next_in(THIS, __value = NO_INIT)
+	z_stream * THIS
+	Bytef * __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->next_in = __value;
+	RETVAL = THIS->next_in;
+    OUTPUT:
+	RETVAL
+
+uInt
+avail_in(THIS, __value = NO_INIT)
+	z_stream * THIS
+	uInt __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->avail_in = __value;
+	RETVAL = THIS->avail_in;
+    OUTPUT:
+	RETVAL
+
+uLong
+total_in(THIS, __value = NO_INIT)
+	z_stream * THIS
+	uLong __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->total_in = __value;
+	RETVAL = THIS->total_in;
+    OUTPUT:
+	RETVAL
+
+Bytef *
+next_out(THIS, __value = NO_INIT)
+	z_stream * THIS
+	Bytef * __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->next_out = __value;
+	RETVAL = THIS->next_out;
+    OUTPUT:
+	RETVAL
+
+uInt
+avail_out(THIS, __value = NO_INIT)
+	z_stream * THIS
+	uInt __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->avail_out = __value;
+	RETVAL = THIS->avail_out;
+    OUTPUT:
+	RETVAL
+
+uLong
+total_out(THIS, __value = NO_INIT)
+	z_stream * THIS
+	uLong __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->total_out = __value;
+	RETVAL = THIS->total_out;
+    OUTPUT:
+	RETVAL
+
+char *
+msg(THIS, __value = NO_INIT)
+	z_stream * THIS
+	char * __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->msg = __value;
+	RETVAL = THIS->msg;
+    OUTPUT:
+	RETVAL
+
+struct internal_state *
+state(THIS, __value = NO_INIT)
+	z_stream * THIS
+	struct internal_state * __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->state = __value;
+	RETVAL = THIS->state;
+    OUTPUT:
+	RETVAL
+
+alloc_func
+zalloc(THIS, __value = NO_INIT)
+	z_stream * THIS
+	alloc_func __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->zalloc = __value;
+	RETVAL = THIS->zalloc;
+    OUTPUT:
+	RETVAL
+
+free_func
+zfree(THIS, __value = NO_INIT)
+	z_stream * THIS
+	free_func __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->zfree = __value;
+	RETVAL = THIS->zfree;
+    OUTPUT:
+	RETVAL
+
+voidpf
+opaque(THIS, __value = NO_INIT)
+	z_stream * THIS
+	voidpf __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->opaque = __value;
+	RETVAL = THIS->opaque;
+    OUTPUT:
+	RETVAL
+
+int
+data_type(THIS, __value = NO_INIT)
+	z_stream * THIS
+	int __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->data_type = __value;
+	RETVAL = THIS->data_type;
+    OUTPUT:
+	RETVAL
+
+uLong
+adler(THIS, __value = NO_INIT)
+	z_stream * THIS
+	uLong __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->adler = __value;
+	RETVAL = THIS->adler;
+    OUTPUT:
+	RETVAL
+
+uLong
+reserved(THIS, __value = NO_INIT)
+	z_stream * THIS
+	uLong __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->reserved = __value;
+	RETVAL = THIS->reserved;
+    OUTPUT:
+	RETVAL
+
+
+MODULE = Git::LibGit2		PACKAGE = git_rawobj		
+
+git_rawobj *
+_to_ptr(THIS)
+	git_rawobj THIS = NO_INIT
+    PROTOTYPE: $
+    CODE:
+	if (sv_derived_from(ST(0), "git_rawobj")) {
+	    STRLEN len;
+	    char *s = SvPV((SV*)SvRV(ST(0)), len);
+	    if (len != sizeof(THIS))
+		croak("Size %d of packed data != expected %d",
+			len, sizeof(THIS));
+	    RETVAL = (git_rawobj *)s;
+	}
+	else
+	    croak("THIS is not of type git_rawobj");
+    OUTPUT:
+	RETVAL
+
+git_rawobj
+new(CLASS)
+	char *CLASS = NO_INIT
+    PROTOTYPE: $
+    CODE:
+	Zero((void*)&RETVAL, sizeof(RETVAL), char);
+    OUTPUT:
+	RETVAL
+
+MODULE = Git::LibGit2		PACKAGE = git_rawobjPtr		
+
+void *
+data(THIS, __value = NO_INIT)
+	git_rawobj * THIS
+	void * __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->data = __value;
+	RETVAL = THIS->data;
+    OUTPUT:
+	RETVAL
+
+size_t
+len(THIS, __value = NO_INIT)
+	git_rawobj * THIS
+	size_t __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->len = __value;
+	RETVAL = THIS->len;
+    OUTPUT:
+	RETVAL
+
+git_otype
+type(THIS, __value = NO_INIT)
+	git_rawobj * THIS
+	git_otype __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->type = __value;
+	RETVAL = THIS->type;
+    OUTPUT:
+	RETVAL
+
+
+MODULE = Git::LibGit2		PACKAGE = gz_header		
+
+gz_header *
+_to_ptr(THIS)
+	gz_header THIS = NO_INIT
+    PROTOTYPE: $
+    CODE:
+	if (sv_derived_from(ST(0), "gz_header")) {
+	    STRLEN len;
+	    char *s = SvPV((SV*)SvRV(ST(0)), len);
+	    if (len != sizeof(THIS))
+		croak("Size %d of packed data != expected %d",
+			len, sizeof(THIS));
+	    RETVAL = (gz_header *)s;
+	}
+	else
+	    croak("THIS is not of type gz_header");
+    OUTPUT:
+	RETVAL
+
+gz_header
+new(CLASS)
+	char *CLASS = NO_INIT
+    PROTOTYPE: $
+    CODE:
+	Zero((void*)&RETVAL, sizeof(RETVAL), char);
+    OUTPUT:
+	RETVAL
+
+MODULE = Git::LibGit2		PACKAGE = gz_headerPtr		
+
+int
+text(THIS, __value = NO_INIT)
+	gz_header * THIS
+	int __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->text = __value;
+	RETVAL = THIS->text;
+    OUTPUT:
+	RETVAL
+
+uLong
+time(THIS, __value = NO_INIT)
+	gz_header * THIS
+	uLong __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->time = __value;
+	RETVAL = THIS->time;
+    OUTPUT:
+	RETVAL
+
+int
+xflags(THIS, __value = NO_INIT)
+	gz_header * THIS
+	int __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->xflags = __value;
+	RETVAL = THIS->xflags;
+    OUTPUT:
+	RETVAL
+
+int
+os(THIS, __value = NO_INIT)
+	gz_header * THIS
+	int __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->os = __value;
+	RETVAL = THIS->os;
+    OUTPUT:
+	RETVAL
+
+Bytef *
+extra(THIS, __value = NO_INIT)
+	gz_header * THIS
+	Bytef * __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->extra = __value;
+	RETVAL = THIS->extra;
+    OUTPUT:
+	RETVAL
+
+uInt
+extra_len(THIS, __value = NO_INIT)
+	gz_header * THIS
+	uInt __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->extra_len = __value;
+	RETVAL = THIS->extra_len;
+    OUTPUT:
+	RETVAL
+
+uInt
+extra_max(THIS, __value = NO_INIT)
+	gz_header * THIS
+	uInt __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->extra_max = __value;
+	RETVAL = THIS->extra_max;
+    OUTPUT:
+	RETVAL
+
+Bytef *
+name(THIS, __value = NO_INIT)
+	gz_header * THIS
+	Bytef * __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->name = __value;
+	RETVAL = THIS->name;
+    OUTPUT:
+	RETVAL
+
+uInt
+name_max(THIS, __value = NO_INIT)
+	gz_header * THIS
+	uInt __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->name_max = __value;
+	RETVAL = THIS->name_max;
+    OUTPUT:
+	RETVAL
+
+Bytef *
+comment(THIS, __value = NO_INIT)
+	gz_header * THIS
+	Bytef * __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->comment = __value;
+	RETVAL = THIS->comment;
+    OUTPUT:
+	RETVAL
+
+uInt
+comm_max(THIS, __value = NO_INIT)
+	gz_header * THIS
+	uInt __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->comm_max = __value;
+	RETVAL = THIS->comm_max;
+    OUTPUT:
+	RETVAL
+
+int
+hcrc(THIS, __value = NO_INIT)
+	gz_header * THIS
+	int __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->hcrc = __value;
+	RETVAL = THIS->hcrc;
+    OUTPUT:
+	RETVAL
+
+int
+done(THIS, __value = NO_INIT)
+	gz_header * THIS
+	int __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->done = __value;
+	RETVAL = THIS->done;
+    OUTPUT:
+	RETVAL
+
+
+MODULE = Git::LibGit2		PACKAGE = git_oid		
+
+git_oid *
+_to_ptr(THIS)
+	git_oid THIS = NO_INIT
+    PROTOTYPE: $
+    CODE:
+	if (sv_derived_from(ST(0), "git_oid")) {
+	    STRLEN len;
+	    char *s = SvPV((SV*)SvRV(ST(0)), len);
+	    if (len != sizeof(THIS))
+		croak("Size %d of packed data != expected %d",
+			len, sizeof(THIS));
+	    RETVAL = (git_oid *)s;
+	}
+	else
+	    croak("THIS is not of type git_oid");
+    OUTPUT:
+	RETVAL
+
+git_oid
+new(CLASS)
+	char *CLASS = NO_INIT
+    PROTOTYPE: $
+    CODE:
+	Zero((void*)&RETVAL, sizeof(RETVAL), char);
+    OUTPUT:
+	RETVAL
+
+
+MODULE = Git::LibGit2		PACKAGE = git_index_time		
+
+git_index_time *
+_to_ptr(THIS)
+	git_index_time THIS = NO_INIT
+    PROTOTYPE: $
+    CODE:
+	if (sv_derived_from(ST(0), "git_index_time")) {
+	    STRLEN len;
+	    char *s = SvPV((SV*)SvRV(ST(0)), len);
+	    if (len != sizeof(THIS))
+		croak("Size %d of packed data != expected %d",
+			len, sizeof(THIS));
+	    RETVAL = (git_index_time *)s;
+	}
+	else
+	    croak("THIS is not of type git_index_time");
+    OUTPUT:
+	RETVAL
+
+git_index_time
+new(CLASS)
+	char *CLASS = NO_INIT
+    PROTOTYPE: $
+    CODE:
+	Zero((void*)&RETVAL, sizeof(RETVAL), char);
+    OUTPUT:
+	RETVAL
+
+MODULE = Git::LibGit2		PACKAGE = git_index_timePtr		
+
+git_time_t
+seconds(THIS, __value = NO_INIT)
+	git_index_time * THIS
+	git_time_t __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->seconds = __value;
+	RETVAL = THIS->seconds;
+    OUTPUT:
+	RETVAL
+
+unsigned int
+nanoseconds(THIS, __value = NO_INIT)
+	git_index_time * THIS
+	unsigned int __value
+    PROTOTYPE: $;$
+    CODE:
+	if (items > 1)
+	    THIS->nanoseconds = __value;
+	RETVAL = THIS->nanoseconds;
+    OUTPUT:
+	RETVAL
+

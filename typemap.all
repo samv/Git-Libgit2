@@ -1,0 +1,73 @@
+Bytef *						T_PV
+__fsid_t					T_OPAQUE_STRUCT
+__fsid_t *					T_PTROBJ
+alloc_func					T_PTROBJ
+const char *					T_PTROBJ
+fd_set						T_OPAQUE_STRUCT
+fd_set *					T_PTROBJ
+free_func					T_PTROBJ
+git_index_entry					T_OPAQUE_STRUCT
+git_index_entry *				T_PTROBJ
+git_index_time					T_OPAQUE_STRUCT
+git_index_time *				T_PTROBJ
+git_off_t					T_NV
+git_oid						T_OPAQUE_STRUCT
+git_oid *					T_PTROBJ
+git_oid_shorten *				T_PTROBJ
+git_otype					T_PTROBJ
+git_rawobj					T_OPAQUE_STRUCT
+git_rawobj *					T_PTROBJ
+git_signature					T_OPAQUE_STRUCT
+git_signature *					T_PTROBJ
+git_time					T_OPAQUE_STRUCT
+git_time *					T_PTROBJ
+git_time_t					T_PTROBJ
+gz_header					T_OPAQUE_STRUCT
+gz_header *					T_PTROBJ
+long int					T_PTROBJ
+pthread_attr_t					T_OPAQUE_STRUCT
+pthread_attr_t *				T_PTROBJ
+pthread_barrier_t				T_OPAQUE_STRUCT
+pthread_barrier_t *				T_PTROBJ
+pthread_barrierattr_t				T_OPAQUE_STRUCT
+pthread_barrierattr_t *				T_PTROBJ
+pthread_cond_t					T_OPAQUE_STRUCT
+pthread_cond_t *				T_PTROBJ
+pthread_condattr_t				T_OPAQUE_STRUCT
+pthread_condattr_t *				T_PTROBJ
+pthread_mutex_t					T_OPAQUE_STRUCT
+pthread_mutex_t *				T_PTROBJ
+pthread_mutexattr_t				T_OPAQUE_STRUCT
+pthread_mutexattr_t *				T_PTROBJ
+pthread_rwlock_t				T_OPAQUE_STRUCT
+pthread_rwlock_t *				T_PTROBJ
+pthread_rwlockattr_t				T_OPAQUE_STRUCT
+pthread_rwlockattr_t *				T_PTROBJ
+struct __pthread_internal_list *		T_PTROBJ
+struct __pthread_mutex_s			T_OPAQUE_STRUCT
+struct __pthread_mutex_s *			T_PTROBJ
+struct internal_state *				T_PTROBJ
+uInt						T_UV
+uLong						T_UV
+unsigned long int				T_PTROBJ
+voidpf						T_PTR
+z_stream					T_OPAQUE_STRUCT
+z_stream *					T_PTROBJ
+#############################################################################
+INPUT
+T_OPAQUE_STRUCT
+	if (sv_derived_from($arg, \"${ntype}\")) {
+	    STRLEN len;
+	    char  *s = SvPV((SV*)SvRV($arg), len);
+
+	    if (len != sizeof($var))
+		croak(\"Size %d of packed data != expected %d\",
+			len, sizeof($var));
+	    $var = *($type *)s;
+	}
+	else
+	    croak(\"$var is not of type ${ntype}\")
+#############################################################################
+OUTPUT
+T_OPAQUE_STRUCT
+	sv_setref_pvn($arg, \"${ntype}\", (char *)&$var, sizeof($var));

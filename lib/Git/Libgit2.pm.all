@@ -1,0 +1,307 @@
+
+=head2 EXPORT
+
+None by default.
+
+=head2 Exportable functions
+
+  git_oid_shorten *git_oid_shorten_new(size_t min_length)
+  int git_oid_shorten_add(git_oid_shorten *os, const char *text_oid)
+  void git_oid_shorten_free(git_oid_shorten *os)
+
+=head2 Object and class methods for C<git_index_entry>/C<git_index_entryPtr>
+
+The principal Perl representation of a C object of type C<git_index_entry> is an
+object of class C<git_index_entryPtr> which is a reference to an integer
+representation of a C pointer.  To create such an object, one may use
+a combination
+
+  my $buffer = git_index_entry->new();
+  my $obj = $buffer->_to_ptr();
+
+This exersizes the following two methods, and an additional class
+C<git_index_entry>, the internal representation of which is a reference to a
+packed string with the C structure.  Keep in mind that $buffer should
+better survive longer than $obj.
+
+=over
+
+=item C<$object_of_type_git_index_entry-E<gt>_to_ptr()>
+
+Converts an object of type C<git_index_entry> to an object of type C<git_index_entryPtr>.
+
+=item C<git_index_entry-E<gt>new()>
+
+Creates an empty object of type C<git_index_entry>.  The corresponding packed
+string is zeroed out.
+
+=item C<ctime(...)>, C<mtime(...)>, C<dev(...)>, C<ino(...)>, C<mode(...)>, C<uid(...)>, C<gid(...)>, C<file_size(...)>, C<oid(...)>, C<flags(...)>, C<flags_extended(...)>, C<path(...)>
+
+return the current value of the corresponding element if called
+without additional arguments.  Set the element to the supplied value
+(and return the new value) if called with an additional argument.
+
+Applicable to objects of type C<git_index_entryPtr>.
+
+=back
+
+
+=head2 Object and class methods for C<git_time>/C<git_timePtr>
+
+The principal Perl representation of a C object of type C<git_time> is an
+object of class C<git_timePtr> which is a reference to an integer
+representation of a C pointer.  To create such an object, one may use
+a combination
+
+  my $buffer = git_time->new();
+  my $obj = $buffer->_to_ptr();
+
+This exersizes the following two methods, and an additional class
+C<git_time>, the internal representation of which is a reference to a
+packed string with the C structure.  Keep in mind that $buffer should
+better survive longer than $obj.
+
+=over
+
+=item C<$object_of_type_git_time-E<gt>_to_ptr()>
+
+Converts an object of type C<git_time> to an object of type C<git_timePtr>.
+
+=item C<git_time-E<gt>new()>
+
+Creates an empty object of type C<git_time>.  The corresponding packed
+string is zeroed out.
+
+=item C<time(...)>, C<offset(...)>
+
+return the current value of the corresponding element if called
+without additional arguments.  Set the element to the supplied value
+(and return the new value) if called with an additional argument.
+
+Applicable to objects of type C<git_timePtr>.
+
+=back
+
+
+=head2 Object and class methods for C<git_signature>/C<git_signaturePtr>
+
+The principal Perl representation of a C object of type C<git_signature> is an
+object of class C<git_signaturePtr> which is a reference to an integer
+representation of a C pointer.  To create such an object, one may use
+a combination
+
+  my $buffer = git_signature->new();
+  my $obj = $buffer->_to_ptr();
+
+This exersizes the following two methods, and an additional class
+C<git_signature>, the internal representation of which is a reference to a
+packed string with the C structure.  Keep in mind that $buffer should
+better survive longer than $obj.
+
+=over
+
+=item C<$object_of_type_git_signature-E<gt>_to_ptr()>
+
+Converts an object of type C<git_signature> to an object of type C<git_signaturePtr>.
+
+=item C<git_signature-E<gt>new()>
+
+Creates an empty object of type C<git_signature>.  The corresponding packed
+string is zeroed out.
+
+=item C<name(...)>, C<email(...)>, C<when(...)>
+
+return the current value of the corresponding element if called
+without additional arguments.  Set the element to the supplied value
+(and return the new value) if called with an additional argument.
+
+Applicable to objects of type C<git_signaturePtr>.
+
+=back
+
+
+=head2 Object and class methods for C<z_stream>/C<z_streamPtr>
+
+The principal Perl representation of a C object of type C<z_stream> is an
+object of class C<z_streamPtr> which is a reference to an integer
+representation of a C pointer.  To create such an object, one may use
+a combination
+
+  my $buffer = z_stream->new();
+  my $obj = $buffer->_to_ptr();
+
+This exersizes the following two methods, and an additional class
+C<z_stream>, the internal representation of which is a reference to a
+packed string with the C structure.  Keep in mind that $buffer should
+better survive longer than $obj.
+
+=over
+
+=item C<$object_of_type_z_stream-E<gt>_to_ptr()>
+
+Converts an object of type C<z_stream> to an object of type C<z_streamPtr>.
+
+=item C<z_stream-E<gt>new()>
+
+Creates an empty object of type C<z_stream>.  The corresponding packed
+string is zeroed out.
+
+=item C<next_in(...)>, C<avail_in(...)>, C<total_in(...)>, C<next_out(...)>, C<avail_out(...)>, C<total_out(...)>, C<msg(...)>, C<state(...)>, C<zalloc(...)>, C<zfree(...)>, C<opaque(...)>, C<data_type(...)>, C<adler(...)>, C<reserved(...)>
+
+return the current value of the corresponding element if called
+without additional arguments.  Set the element to the supplied value
+(and return the new value) if called with an additional argument.
+
+Applicable to objects of type C<z_streamPtr>.
+
+=back
+
+
+=head2 Object and class methods for C<git_rawobj>/C<git_rawobjPtr>
+
+The principal Perl representation of a C object of type C<git_rawobj> is an
+object of class C<git_rawobjPtr> which is a reference to an integer
+representation of a C pointer.  To create such an object, one may use
+a combination
+
+  my $buffer = git_rawobj->new();
+  my $obj = $buffer->_to_ptr();
+
+This exersizes the following two methods, and an additional class
+C<git_rawobj>, the internal representation of which is a reference to a
+packed string with the C structure.  Keep in mind that $buffer should
+better survive longer than $obj.
+
+=over
+
+=item C<$object_of_type_git_rawobj-E<gt>_to_ptr()>
+
+Converts an object of type C<git_rawobj> to an object of type C<git_rawobjPtr>.
+
+=item C<git_rawobj-E<gt>new()>
+
+Creates an empty object of type C<git_rawobj>.  The corresponding packed
+string is zeroed out.
+
+=item C<data(...)>, C<len(...)>, C<type(...)>
+
+return the current value of the corresponding element if called
+without additional arguments.  Set the element to the supplied value
+(and return the new value) if called with an additional argument.
+
+Applicable to objects of type C<git_rawobjPtr>.
+
+=back
+
+
+=head2 Object and class methods for C<gz_header>/C<gz_headerPtr>
+
+The principal Perl representation of a C object of type C<gz_header> is an
+object of class C<gz_headerPtr> which is a reference to an integer
+representation of a C pointer.  To create such an object, one may use
+a combination
+
+  my $buffer = gz_header->new();
+  my $obj = $buffer->_to_ptr();
+
+This exersizes the following two methods, and an additional class
+C<gz_header>, the internal representation of which is a reference to a
+packed string with the C structure.  Keep in mind that $buffer should
+better survive longer than $obj.
+
+=over
+
+=item C<$object_of_type_gz_header-E<gt>_to_ptr()>
+
+Converts an object of type C<gz_header> to an object of type C<gz_headerPtr>.
+
+=item C<gz_header-E<gt>new()>
+
+Creates an empty object of type C<gz_header>.  The corresponding packed
+string is zeroed out.
+
+=item C<text(...)>, C<time(...)>, C<xflags(...)>, C<os(...)>, C<extra(...)>, C<extra_len(...)>, C<extra_max(...)>, C<name(...)>, C<name_max(...)>, C<comment(...)>, C<comm_max(...)>, C<hcrc(...)>, C<done(...)>
+
+return the current value of the corresponding element if called
+without additional arguments.  Set the element to the supplied value
+(and return the new value) if called with an additional argument.
+
+Applicable to objects of type C<gz_headerPtr>.
+
+=back
+
+
+=head2 Object and class methods for C<git_oid>/C<git_oidPtr>
+
+The principal Perl representation of a C object of type C<git_oid> is an
+object of class C<git_oidPtr> which is a reference to an integer
+representation of a C pointer.  To create such an object, one may use
+a combination
+
+  my $buffer = git_oid->new();
+  my $obj = $buffer->_to_ptr();
+
+This exersizes the following two methods, and an additional class
+C<git_oid>, the internal representation of which is a reference to a
+packed string with the C structure.  Keep in mind that $buffer should
+better survive longer than $obj.
+
+=over
+
+=item C<$object_of_type_git_oid-E<gt>_to_ptr()>
+
+Converts an object of type C<git_oid> to an object of type C<git_oidPtr>.
+
+=item C<git_oid-E<gt>new()>
+
+Creates an empty object of type C<git_oid>.  The corresponding packed
+string is zeroed out.
+
+=item C<id(...)>
+
+return the current value of the corresponding element if called
+without additional arguments.  Set the element to the supplied value
+(and return the new value) if called with an additional argument.
+
+Applicable to objects of type C<git_oidPtr>.
+
+=back
+
+
+=head2 Object and class methods for C<git_index_time>/C<git_index_timePtr>
+
+The principal Perl representation of a C object of type C<git_index_time> is an
+object of class C<git_index_timePtr> which is a reference to an integer
+representation of a C pointer.  To create such an object, one may use
+a combination
+
+  my $buffer = git_index_time->new();
+  my $obj = $buffer->_to_ptr();
+
+This exersizes the following two methods, and an additional class
+C<git_index_time>, the internal representation of which is a reference to a
+packed string with the C structure.  Keep in mind that $buffer should
+better survive longer than $obj.
+
+=over
+
+=item C<$object_of_type_git_index_time-E<gt>_to_ptr()>
+
+Converts an object of type C<git_index_time> to an object of type C<git_index_timePtr>.
+
+=item C<git_index_time-E<gt>new()>
+
+Creates an empty object of type C<git_index_time>.  The corresponding packed
+string is zeroed out.
+
+=item C<seconds(...)>, C<nanoseconds(...)>
+
+return the current value of the corresponding element if called
+without additional arguments.  Set the element to the supplied value
+(and return the new value) if called with an additional argument.
+
+Applicable to objects of type C<git_index_timePtr>.
+
+=back
+
+
