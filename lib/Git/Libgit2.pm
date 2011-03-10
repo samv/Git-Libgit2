@@ -69,6 +69,7 @@ has '__C' => (
 	is => 'ro',
 	isa => "Git::Libgit2::repo",
 	lazy => 1,
+	predicate => "__has_C",
 	default => sub {
 		my $self = shift;
 		# could do git_repository_open2 if they passed in
@@ -76,6 +77,13 @@ has '__C' => (
 		git_repository_open($self->gitdir);
 	}
 );
+
+sub DESTROY {
+	my $self = shift;
+	if ( $self->__has_C ) {
+		git_repository_free($self->__C);
+	}
+}
 
 __PACKAGE__->meta->make_immutable;
 

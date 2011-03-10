@@ -1,7 +1,7 @@
 OUTPUT
 
 O_OBJECT
-	sv_setref_pvn($arg, \"${(my $ntt = $ntype) =~ s{Ptr$}{}; $ntt =~ s{^git_}{Git::Libgit2::}; $ntt =~ s{repository}{repo}; \$ntt}\", (char *)&$var, sizeof($var));
+	sv_setref_iv( $arg, \"${(my $ntt = $ntype) =~ s{Ptr$}{}; $ntt =~ s{^git_}{Git::Libgit2::}; $ntt =~ s{repository}{repo}; \$ntt}\", $var );
 
 INPUT
 

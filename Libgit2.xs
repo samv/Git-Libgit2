@@ -64,3 +64,7 @@ git_repository_open(gitdir)
   OUTPUT:
     RETVAL
 
+void
+git_repository_free(repo)
+	 git_repository * repo;
+
